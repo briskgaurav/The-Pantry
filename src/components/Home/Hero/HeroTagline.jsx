@@ -32,14 +32,14 @@ export default function HeroTagline({ hidden }) {
     );
 
     return (
-        <div ref={rootRef} className="absolute select-none bottom-[2vw] left-[4vw] right-[4vw] z-200 flex items-end justify-between pointer-events-none">
+        <div ref={rootRef} className="absolute select-none bottom-[2vw] max-md:bottom-[5vw] left-[4vw] right-[4vw] z-200 flex items-end justify-between max-md:gap-[3vw] pointer-events-none">
             {/* Left side: Logo */}
             <Link
                 href="#"
                 target="_blank"
-                className="pointer-events-auto flex items-center gap-[.5vw] text-foreground transition-opacity hover:opacity-70"
+                className="pointer-events-auto max-md:hidden flex items-center gap-[.5vw] max-md:gap-[1.5vw] text-foreground transition-opacity hover:opacity-70"
             >
-                <div className="h-[1.5vw] w-auto">
+                <div className="h-[1.5vw] max-md:h-[4vw] w-auto">
                     <svg
                         className="h-full w-auto"
                         viewBox="0 0 13 25"
@@ -55,13 +55,13 @@ export default function HeroTagline({ hidden }) {
                         />
                     </svg>
                 </div>
-                <div className="text-[.8vw] font-medium uppercase">By Gaurav</div>
+                <div className="text12 font-medium uppercase">By Gaurav</div>
             </Link>
 
             <div className="pointer-events-auto">
                 {/* Tagline text block */}
-                <div className="rounded-2xl w-[32vw] leading-[1.2] text-foreground bg-background px-[2vw] py-[1.5vw]">
-                    <p>
+                <div className="rounded-2xl max-md:rounded-[3vw] w-[32vw] max-md:w-full leading-[1.2] text-foreground bg-background  px-[2vw] py-[1.5vw] max-md:px-[4vw] max-md:py-[5vw]">
+                    <p className="text16 max-md:w-[90%] max-md:mx-auto max-md:text-center">
                         We serve delightful, interactive culinary models, transforming
                         simple ingredients into seamless and highly engaging 3D dining
                         experiences.
@@ -71,8 +71,8 @@ export default function HeroTagline({ hidden }) {
                 {/* CTA button */}
                 <TabButton
                     label="Scroll Down"
-                    className="ml-[15vw]"
-                    labelClassName="text-foreground font-normal! transition-none pb-[.2vw]"
+                    className="ml-[15vw] max-md:left-1/2 max-md:-translate-x-1/2  max-md:ml-0!"
+                    labelClassName="text-foreground text10 max-md:text-[2.5vw]! uppercase font-normal! transition-none max-md:pb-[2vw] pb-[.2vw]"
                     svgClassName="text-background"
                 />
             </div>

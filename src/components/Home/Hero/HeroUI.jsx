@@ -9,7 +9,7 @@ import HeroTagline from "./HeroTagline";
 export default function HeroUI({ active, setActive, view, setView, open, setOpen }) {
     return (
         <>
-            <FractalGlass />
+            {/* <FractalGlass /> */}
             <CategorySelector
                 active={active}
                 setActive={setActive}

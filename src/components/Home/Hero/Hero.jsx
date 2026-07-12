@@ -11,8 +11,8 @@ export default function Hero() {
   const [view, setView] = useState(null)
 
   return (
-    <section className='h-screen bg-background w-full p-[.5vw]'>
-      <div className='bg-background  text-foreground relative h-full w-full overflow-hidden rounded-[2.5vw]'>
+    <section className='h-dvh max-md:p-[1.5vw]  w-full p-[.5vw]'>
+      <div className='bg-background  text-foreground relative h-full w-full overflow-hidden rounded-[2.5vw] max-md:rounded-[5vw]'>
         <div className='absolute inset-0'>
           <Experience active={active} view={view} open={open} />
         </div>

@@ -23,15 +23,15 @@ const TabButton = forwardRef(function TabButton(
       type="button"
       onClick={onClick}
       aria-label={label}
-      className={`pointer-events-auto group  relative flex cursor-pointer items-center justify-center ${className}`}
+      className={`pointer-events-auto group max-md:mt-[-1px] relative flex cursor-pointer items-center justify-center ${className}`}
     >
       <span
-        className={`absolute z-10 text-[.8vw] font-semibold tracking-[.15em] transition-colors ${labelClassName}`}
+        className={`absolute z-10 text-[.8vw] max-md:text-[2.6vw] font-semibold tracking-[.15em] transition-colors ${labelClassName}`}
       >
         {label}
       </span>
       <svg
-        className={`h-[2.5vw] w-auto ${svgClassName}`}
+        className={`h-[2.5vw] max-md:h-[10vw] w-auto ${svgClassName}`}
         viewBox="0 0 213 43"
         preserveAspectRatio="none"
         fill="none"

@@ -5,11 +5,14 @@ import gsap from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { useGSAP } from "@gsap/react";
 import { CATEGORIES } from "@/components/utils/categories";
+import { useMobile } from "@/components/utils/useMobile";
 
 gsap.registerPlugin(Draggable);
 
 const N = CATEGORIES.length;
-const CENTER = 2;
+// Number of category buttons framed at once: 5 on desktop, 3 on mobile.
+const DESKTOP_WINDOWS = N;
+const MOBILE_WINDOWS = 3;
 const STEP = 100;
 const shortestDelta = (from, to) => {
   const d = (((to - from) % N) + N) % N;
@@ -25,6 +28,10 @@ const wrapIdx = (i) => ((i % N) + N) % N;
 const LOOP = [...CATEGORIES, ...CATEGORIES];
 
 export default function CategorySelector({ active, setActive, open, setOpen }) {
+  const isMobile = useMobile();
+  const WINDOWS = isMobile ? MOBILE_WINDOWS : DESKTOP_WINDOWS;
+  const CENTER = (WINDOWS - 1) / 2;
+
   const activeIdx = Math.max(
     0,
     CATEGORIES.findIndex((c) => c.id === active),
@@ -37,15 +44,20 @@ export default function CategorySelector({ active, setActive, open, setOpen }) {
   const dragRef = useRef(null);
   const posRef = useRef(null);
   if (posRef.current === null) posRef.current = { pos: activeIdx };
+  // Kept in a ref so the drag handlers (captured once) always read the
+  // current center after a desktop/mobile switch changes the window count.
+  // Synced in the snap effect below, which re-runs whenever isMobile flips.
+  const centerRef = useRef(CENTER);
 
   // Paint every window's strip from the shared floating position, so the
   // idle snap animation and the live drag both drive the exact same render.
   const render = () => {
     const { pos } = posRef.current;
+    const center = centerRef.current;
     stripRefs.current.forEach((el, box) => {
       if (el)
         gsap.set(el, {
-          xPercent: wrapX(-STEP * (pos + (box - CENTER))),
+          xPercent: wrapX(-STEP * (pos + (box - center))),
         });
     });
   };
@@ -71,6 +83,7 @@ export default function CategorySelector({ active, setActive, open, setOpen }) {
   // (via click, drag release, or an external state update).
   useGSAP(
     () => {
+      centerRef.current = CENTER;
       const state = posRef.current;
       state.pos = wrapIdx(state.pos);
 
@@ -83,7 +96,7 @@ export default function CategorySelector({ active, setActive, open, setOpen }) {
         overwrite: true,
       });
     },
-    { dependencies: [activeIdx] },
+    { dependencies: [activeIdx, isMobile] },
   );
 
   // Horizontal drag to scroll through categories, snapping to the nearest
@@ -151,11 +164,11 @@ export default function CategorySelector({ active, setActive, open, setOpen }) {
   return (
     <div
       ref={containerRef}
-      className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-between px-[1vw]"
+      className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-between px-[1vw] max-md:px-[2vw]"
     >
       <div ref={proxyRef} className="pointer-events-none absolute h-px w-px opacity-0" />
 
-      {Array.from({ length: N }).map((_, box) => {
+      {Array.from({ length: WINDOWS }).map((_, box) => {
         // Which category this window currently frames (center === active).
         const catIdx = wrapIdx(activeIdx + (box - CENTER));
         const isCenter = box === CENTER;
@@ -170,16 +183,16 @@ export default function CategorySelector({ active, setActive, open, setOpen }) {
             onClick={() =>
               isCenter ? setOpen(true) : setActive(CATEGORIES[catIdx].id)
             }
-            className={`pointer-events-auto cursor-pointer relative overflow-hidden rounded-full py-[.5vw] text-[.9vw] text-white ${isCenter ? "bg-black" : ""
+            className={`pointer-events-auto cursor-pointer relative overflow-hidden rounded-full py-[.5vw] max-md:py-[2vw] text12 font-semibold text-white ${isCenter ? "bg-black" : ""
               }`}
           >
             <span aria-hidden className="invisible grid">
               {CATEGORIES.map((item) => (
                 <span
-                  className="col-start-1 row-start-1 whitespace-nowrap px-[1.5vw]"
+                  className="col-start-1 row-start-1 whitespace-nowrap px-[1.5vw] max-md:px-[3vw]"
                   key={item.id}
                 >
-                  {item.label}
+                  {isMobile && item.mobileLabel ? item.mobileLabel : item.label}
                 </span>
               ))}
             </span>
@@ -195,7 +208,7 @@ export default function CategorySelector({ active, setActive, open, setOpen }) {
                   className="shrink-0 grow-0 basis-full whitespace-nowrap text-center"
                   key={i}
                 >
-                  {item.label}
+                  {isMobile && item.mobileLabel ? item.mobileLabel : item.label}
                 </span>
               ))}
             </span>
