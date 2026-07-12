@@ -198,7 +198,7 @@ export default function ViewPanel({
         ref={panelRef}
         className="pointer-events-none absolute left-1/2 bottom-[1vw] max-md:bottom-[12vw] z-20 -translate-x-1/2"
       >
-        <div className="pointer-events-auto max-md:min-h-[75vw] w-[80vw] max-md:w-[92vw] rounded-[1.2vw] max-md:rounded-[3vw] bg-background px-[2.5vw] py-[1.5vw] max-md:px-[5vw] max-md:py-[6vw] text-foreground">
+        <div className="pointer-events-auto max-md:min-h-[70vw] w-[80vw] max-md:w-[92vw] rounded-[1.2vw] max-md:rounded-[3vw] bg-background max-md:flex max-md:items-center max-md:justify-center px-[2.5vw] py-[1.5vw] max-md:px-[5vw] max-md:py-[2vw] text-foreground">
           <div ref={contentRef} className="flex flex-col items-stretch">
             <div className="flex items-center justify-between gap-[3vw] max-md:flex-col max-md:items-stretch max-md:gap-[6vw]">
               <div className="flex items-center w-fit gap-[2vw] max-md:w-full max-md:flex-col max-md:items-start max-md:gap-[3vw]">
@@ -234,8 +234,8 @@ export default function ViewPanel({
                         onClick={() => setView(i)}
                         aria-label={v.label}
                         className={`relative overflow-hidden rounded-[.8vw] max-md:rounded-[2.5vw] bg-foreground/[0.07] ring-2 transition-all duration-300 ${isActive
-                          ? "h-[8vw] w-[8vw] max-md:h-[26vw] max-md:w-[26vw] ring-foreground"
-                          : "h-[8vw] w-[5vw] max-md:h-[26vw] max-md:w-[18vw] ring-foreground/10 hover:ring-foreground/25"
+                          ? "h-[8vw] w-[8vw] max-md:h-[20vw] max-md:w-[20vw] ring-foreground"
+                          : "h-[8vw] w-[5vw] max-md:h-[20vw] max-md:w-[14vw] ring-foreground/10 hover:ring-foreground/25"
                           }`}
                       >
                         <Image
@@ -255,7 +255,7 @@ export default function ViewPanel({
         </div>
       </div>
 
-      <div className="pointer-events-none absolute left-[-5vw] max-md:left-[-20vw] top-1/2 z-30 -translate-y-1/2 max-md:top-[40%]">
+      <div className="pointer-events-none absolute left-[-5vw] max-md:left-[-20vw] top-1/2 z-30 -translate-y-1/2 max-md:top-[35%]">
         <TabButton
           ref={leftRef}
           label={
@@ -268,7 +268,7 @@ export default function ViewPanel({
         />
       </div>
 
-      <div className="pointer-events-none absolute right-[-5vw] max-md:right-[-20vw] max-md:top-[40%] top-1/2 z-30 -translate-y-1/2">
+      <div className="pointer-events-none absolute right-[-5vw] max-md:right-[-20vw] max-md:top-[35%] top-1/2 z-30 -translate-y-1/2">
         <TabButton
           ref={rightRef}
           label={

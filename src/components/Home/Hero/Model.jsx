@@ -111,7 +111,7 @@ function CategoryModel({
           overwrite: "auto",
         });
         gsap.to(vel.position, {
-          y: 0.3,
+          y: isMobile ? 0.5 : 0.3,
           duration: 0.8,
           ease: "power3.inOut",
           overwrite: "auto",
