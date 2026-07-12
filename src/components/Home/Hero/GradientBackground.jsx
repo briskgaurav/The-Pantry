@@ -5,7 +5,7 @@ import { useFrame } from '@react-three/fiber'
 import gsap from 'gsap'
 import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
-import { CATEGORIES } from './categories'
+import { CATEGORIES } from '../../utils/categories'
 
 // Fullscreen quad drawn in clip space (the vertex shader ignores the camera),
 // so it always fills the canvas and sits behind the model. depthTest/Write are

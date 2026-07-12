@@ -8,11 +8,11 @@ import { Suspense, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { clone as skeletonClone } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import { degToRad } from 'three/src/math/MathUtils'
-import { CATEGORIES, VIEWS } from './categories'
+import { CATEGORIES, VIEWS } from '../../utils/categories'
 
 const FIT_SIZE = 2.8
 
-function CategoryModel({ file, node, rotationX = 0, rotationY = 0, view = null }) {
+function CategoryModel({ file, node, rotationX = 0, rotationY = 0, view = null, open = false }) {
   const { scene } = useGLTF(file)
 
   const object = useMemo(() => {
@@ -30,7 +30,7 @@ function CategoryModel({ file, node, rotationX = 0, rotationY = 0, view = null }
     const center = box.getCenter(new THREE.Vector3())
     const scale = FIT_SIZE / Math.max(size.x, size.y, size.z)
 
-    model.position.sub(center) 
+    model.position.sub(center)
 
     const tilt = new THREE.Group()
     tilt.add(model)
@@ -76,32 +76,44 @@ function CategoryModel({ file, node, rotationX = 0, rotationY = 0, view = null }
     }
   })
 
-  // Idle loop when no view is selected; a held orientation when one is.
-  // Rebuilds on view change so the idle timeline always starts from rest.
+  // Opening the vault pauses the idle auto-movement. With no view held the
+  // model simply freezes in place; picking a view eases it to that orientation.
+  // Closing resumes the idle loop from wherever the pose currently rests.
   useGSAP(
     () => {
       const el = ref.current
       const vel = viewRef.current
       if (!el || !vel) return
 
-      if (view != null && VIEWS[view]) {
-        const v = VIEWS[view]
+      if (open) {
+        // Pause: stop the float and let the killed idle timeline leave the
+        // rotation exactly where it was — no snap.
         floatEnabled.current = false
         gsap.to(el.position, { y: 0, duration: 0.5, ease: 'power3.out', overwrite: 'auto' })
-        gsap.to(el.rotation, { x: 0, y: 0, z: 0, duration: 0.5, ease: 'power3.out', overwrite: 'auto' })
-        gsap.to(vel.rotation, {
-          x: degToRad(v.rx),
-          y: degToRad(v.ry),
-          z: 0,
-          duration: 0.8,
-          ease: 'power3.inOut',
-          overwrite: 'auto',
-        })
+
+        // Make room for the panel: ease the model down in size and up in space.
+        gsap.to(vel.scale, { x: 0.82, y: 0.82, z: 0.82, duration: 0.8, ease: 'power3.inOut', overwrite: 'auto' })
+        gsap.to(vel.position, { y: 0.3, duration: 0.8, ease: 'power3.inOut', overwrite: 'auto' })
+
+        if (view != null && VIEWS[view]) {
+          const v = VIEWS[view]
+          gsap.to(el.rotation, { x: 0, y: 0, z: 0, duration: 0.5, ease: 'power3.out', overwrite: 'auto' })
+          gsap.to(vel.rotation, {
+            x: degToRad(v.rx),
+            y: degToRad(v.ry),
+            z: 0,
+            duration: 0.8,
+            ease: 'power3.inOut',
+            overwrite: 'auto',
+          })
+        }
         return
       }
 
       floatEnabled.current = true
       gsap.to(vel.rotation, { x: 0, y: 0, z: 0, duration: 0.6, ease: 'power3.inOut', overwrite: 'auto' })
+      gsap.to(vel.scale, { x: 1, y: 1, z: 1, duration: 0.6, ease: 'power3.inOut', overwrite: 'auto' })
+      gsap.to(vel.position, { y: 0, duration: 0.6, ease: 'power3.inOut', overwrite: 'auto' })
 
       const tl = gsap.timeline({ repeat: -1, repeatDelay: 4, delay: 0.9 })
       tl.to(el.rotation, { z: degToRad(3), duration: 1, ease: 'sine.inOut' })
@@ -114,7 +126,7 @@ function CategoryModel({ file, node, rotationX = 0, rotationY = 0, view = null }
         })
       return () => tl.kill()
     },
-    { dependencies: [object, view] }
+    { dependencies: [object, view, open] }
   )
 
   return (
@@ -128,7 +140,7 @@ function CategoryModel({ file, node, rotationX = 0, rotationY = 0, view = null }
   )
 }
 
-export default function Models({ active, view = null }) {
+export default function Models({ active, view = null, open = false }) {
   const category = CATEGORIES.find((c) => c.id === active) ?? CATEGORIES[0]
   return (
     // Per-switch Suspense so loading a different file never unmounts the scene.
@@ -140,6 +152,7 @@ export default function Models({ active, view = null }) {
         rotationX={category.rotationX}
         rotationY={category.rotationY}
         view={view}
+        open={open}
       />
     </Suspense>
   )

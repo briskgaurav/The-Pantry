@@ -2,8 +2,11 @@
 
 import { useRef } from "react";
 import gsap from "gsap";
+import { Draggable } from "gsap/Draggable";
 import { useGSAP } from "@gsap/react";
-import { CATEGORIES } from "@/components/Home/Hero/categories";
+import { CATEGORIES } from "@/components/utils/categories";
+
+gsap.registerPlugin(Draggable);
 
 const N = CATEGORIES.length;
 const CENTER = 2;
@@ -17,21 +20,35 @@ const wrapX = (v) => {
   const r = v % period;
   return r > 0 ? r - period : r;
 };
+const wrapIdx = (i) => ((i % N) + N) % N;
 
 const LOOP = [...CATEGORIES, ...CATEGORIES];
 
-export default function CategorySelector({ active, setActive, view, setView }) {
+export default function CategorySelector({ active, setActive, open, setOpen }) {
   const activeIdx = Math.max(
     0,
     CATEGORIES.findIndex((c) => c.id === active),
   );
 
-  // The view panel (lifted to Hero) is open exactly when a view is held.
-  const open = view !== null;
+  const containerRef = useRef(null);
+  const proxyRef = useRef(null);
   const stripRefs = useRef([]);
   const btnRefs = useRef([]);
+  const dragRef = useRef(null);
   const posRef = useRef(null);
   if (posRef.current === null) posRef.current = { pos: activeIdx };
+
+  // Paint every window's strip from the shared floating position, so the
+  // idle snap animation and the live drag both drive the exact same render.
+  const render = () => {
+    const { pos } = posRef.current;
+    stripRefs.current.forEach((el, box) => {
+      if (el)
+        gsap.set(el, {
+          xPercent: wrapX(-STEP * (pos + (box - CENTER))),
+        });
+    });
+  };
 
   // Blur + fade all category buttons out while the view panel is open.
   useGSAP(
@@ -50,19 +67,12 @@ export default function CategorySelector({ active, setActive, view, setView }) {
     { dependencies: [open] },
   );
 
+  // Settle the odometer onto the active category whenever it changes
+  // (via click, drag release, or an external state update).
   useGSAP(
     () => {
       const state = posRef.current;
-      state.pos = ((state.pos % N) + N) % N;
-
-      const render = () => {
-        stripRefs.current.forEach((el, box) => {
-          if (el)
-            gsap.set(el, {
-              xPercent: wrapX(-STEP * (state.pos + (box - CENTER))),
-            });
-        });
-      };
+      state.pos = wrapIdx(state.pos);
 
       render();
       gsap.to(state, {
@@ -76,11 +86,78 @@ export default function CategorySelector({ active, setActive, view, setView }) {
     { dependencies: [activeIdx] },
   );
 
+  // Horizontal drag to scroll through categories, snapping to the nearest
+  // one on release. The whole hero viewport is the drag surface; a tap
+  // without movement still fires a button's onClick.
+  useGSAP(
+    () => {
+      const state = posRef.current;
+      let startPos = 0;
+      let startX = 0;
+      let pxPerStep = 1;
+
+      const [instance] = Draggable.create(proxyRef.current, {
+        type: "x",
+        // Drag anywhere on the hero, not just the category band.
+        trigger: ["#pantry-section", containerRef.current],
+        dragClickables: true,
+        onPress() {
+          gsap.killTweensOf(state);
+          startPos = state.pos;
+          startX = this.x;
+          // Distance between two adjacent windows == one category step,
+          // so the label you grab tracks the pointer naturally.
+          const a = btnRefs.current[0]?.getBoundingClientRect();
+          const b = btnRefs.current[1]?.getBoundingClientRect();
+          pxPerStep =
+            a && b
+              ? Math.abs(b.left + b.width / 2 - (a.left + a.width / 2))
+              : window.innerWidth / N;
+        },
+        onDrag() {
+          state.pos = startPos - (this.x - startX) / pxPerStep;
+          render();
+        },
+        onDragEnd() {
+          const target = Math.round(state.pos);
+          gsap.to(state, {
+            pos: target,
+            duration: 0.4,
+            ease: "power2.out",
+            onUpdate: render,
+            overwrite: true,
+          });
+          setActive(CATEGORIES[wrapIdx(target)].id);
+        },
+      });
+
+      dragRef.current = instance;
+      return () => instance.kill();
+    },
+    { dependencies: [] },
+  );
+
+  // The panel being open hides the buttons, so drag should be inert then.
+  useGSAP(
+    () => {
+      const instance = dragRef.current;
+      if (!instance) return;
+      if (open) instance.disable();
+      else instance.enable();
+    },
+    { dependencies: [open] },
+  );
+
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-between px-[1vw]">
+    <div
+      ref={containerRef}
+      className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-between px-[1vw]"
+    >
+      <div ref={proxyRef} className="pointer-events-none absolute h-px w-px opacity-0" />
+
       {Array.from({ length: N }).map((_, box) => {
         // Which category this window currently frames (center === active).
-        const catIdx = (((activeIdx + (box - CENTER)) % N) + N) % N;
+        const catIdx = wrapIdx(activeIdx + (box - CENTER));
         const isCenter = box === CENTER;
 
         return (
@@ -91,11 +168,10 @@ export default function CategorySelector({ active, setActive, view, setView }) {
               btnRefs.current[box] = el;
             }}
             onClick={() =>
-              isCenter ? setView(0) : setActive(CATEGORIES[catIdx].id)
+              isCenter ? setOpen(true) : setActive(CATEGORIES[catIdx].id)
             }
-            className={`pointer-events-auto cursor-pointer relative overflow-hidden rounded-full py-[.5vw] text-[.9vw] text-white ${
-              isCenter ? "bg-black" : ""
-            }`}
+            className={`pointer-events-auto cursor-pointer relative overflow-hidden rounded-full py-[.5vw] text-[.9vw] text-white ${isCenter ? "bg-black" : ""
+              }`}
           >
             <span aria-hidden className="invisible grid">
               {CATEGORIES.map((item) => (
