@@ -5,9 +5,11 @@ import TabButton from "@/components/Home/Hero/TabButton";
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { useLenis } from "lenis/react";
 
 export default function HeroTagline({ hidden }) {
     const rootRef = useRef(null);
+    const lenis = useLenis();
 
     useGSAP(
         () => {
@@ -71,6 +73,9 @@ export default function HeroTagline({ hidden }) {
                 {/* CTA button */}
                 <TabButton
                     label="Scroll Down"
+                    onClick={() => {
+                        if (lenis) lenis.scrollTo(window.innerHeight);
+                    }}
                     className="ml-[15vw] max-md:left-1/2 max-md:-translate-x-1/2  max-md:ml-0!"
                     labelClassName="text-foreground text10 max-md:text-[2.5vw]! uppercase font-normal! transition-none max-md:pb-[2vw] pb-[.2vw]"
                     svgClassName="text-background"

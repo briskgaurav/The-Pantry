@@ -1,138 +1,119 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import DotsCanvas from './DotsCanvas'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-const SPACING = 32
-const DOT_RADIUS = 1
-const INFLUENCE = 250
-const PULL = 0.35
-const STIFFNESS = 0.06
-const DAMPING = 0.86
+const POSTER =
+  'https://cdn.prod.website-files.com/67a325294e5fbb80fd507882%2F6808f80f65429a2712c1f50a_Foreground%20Video%20compressed-poster-00001.jpg'
+const VIDEO_MP4 =
+  'https://cdn.prod.website-files.com/6855382e0864164c8e6fffec/6855382e0864164c8e7000bd_Foreground%20Video%20compressed-transcode.mp4'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
+
+function buildBoxMask() {
+  const d = [
+    `M 30 0`,
+    `H ${450 - 130}`,
+    `A 30 30 0 0 1 ${450 - 130 + 30} 30`,
+    `V ${60 - 30}`,
+    `A 30 30 0 0 0 ${450 - 130 + 30 * 2} 60`,
+    `H ${450 - 30}`,
+    `A 30 30 0 0 1 450 ${60 + 30}`,
+    `V ${700 - 30}`,
+    `A 30 30 0 0 1 ${450 - 30} 700`,
+    `H 130`,
+    `A 30 30 0 0 1 ${130 - 30} ${700 - 30}`,
+    `V ${700 - 60 + 30}`,
+    `A 30 30 0 0 0 ${130 - 30 * 2} ${700 - 60}`,
+    `H 30`,
+    `A 30 30 0 0 1 0 ${700 - 60 - 30}`,
+    `V 30`,
+    `A 30 30 0 0 1 30 0`,
+    'Z',
+  ].join(' ')
+
+  return `url("data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 700" preserveAspectRatio="none"><path fill="white" d="${d}"/></svg>`
+  )}")`
+}
 
 export default function Dots() {
-  const canvasRef = useRef(null)
+  const BOX_MASK = buildBoxMask()
 
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    
-    const ctx = canvas.getContext('2d')
-    const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    
-    let dots = []
-    let width = 0
-    let height = 0
-    let rafId = 0
-    const pointer = { x: -9999, y: -9999, active: false }
+  const maskStyle = {
+    WebkitMaskImage: BOX_MASK,
+    maskImage: BOX_MASK,
+    WebkitMaskSize: '100% 100%',
+    maskSize: '100% 100%',
+    WebkitMaskRepeat: 'no-repeat',
+    maskRepeat: 'no-repeat',
+  }
 
-    const buildGrid = () => {
-      const rect = canvas.getBoundingClientRect()
-      width = rect.width
-      height = rect.height
-      const dpr = 1
-      
-      canvas.width = Math.floor(width * dpr)
-      canvas.height = Math.floor(height * dpr)
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      
-      const cols = Math.ceil(width / SPACING) + 1
-      const rows = Math.ceil(height / SPACING) + 1
-      const offsetX = (width - (cols - 1) * SPACING) / 2
-      const offsetY = (height - (rows - 1) * SPACING) / 2
-      
-      dots = []
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const hx = offsetX + c * SPACING
-          const hy = offsetY + r * SPACING
-          dots.push({ hx, hy, x: hx, y: hy, vx: 0, vy: 0 })
-        }
+  useGSAP(() => {
+    gsap.fromTo(
+      '#parallax-div',
+      { yPercent: 25 },
+      {
+        yPercent: -25,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#dots-section',
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        },
       }
-    }
-
-    const draw = () => {
-      ctx.clearRect(0, 0, width, height)
-      
-      dots.forEach(d => {
-        let tx = d.hx
-        let ty = d.hy
-        let brightness = 0.28
-        let radius = DOT_RADIUS
-        
-        if (pointer.active) {
-          const dx = pointer.x - d.hx
-          const dy = pointer.y - d.hy
-          const dist = Math.hypot(dx, dy)
-          
-          if (dist < INFLUENCE) {
-            const strength = Math.pow(1 - dist / INFLUENCE, 2) * PULL
-            tx += dx * strength
-            ty += dy * strength
-          }
-          
-          const currDist = Math.hypot(pointer.x - d.x, pointer.y - d.y)
-          if (currDist < INFLUENCE) {
-            const t = 1 - currDist / INFLUENCE
-            brightness += t * 0.55
-            radius += t * 0.9
-          }
-        }
-        
-        d.vx += (tx - d.x) * STIFFNESS
-        d.vy += (ty - d.y) * STIFFNESS
-        d.vx *= DAMPING
-        d.vy *= DAMPING
-        d.x += d.vx
-        d.y += d.vy
-        
-        ctx.beginPath()
-        ctx.arc(d.x, d.y, radius, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(190, 190, 190, ${brightness})`
-        ctx.fill()
-      })
-      
-      rafId = requestAnimationFrame(draw)
-    }
-
-    const handlePointerMove = (e) => {
-      const rect = canvas.getBoundingClientRect()
-      pointer.x = e.clientX - rect.left
-      pointer.y = e.clientY - rect.top
-      pointer.active = true
-    }
-    
-    const handlePointerLeave = () => {
-      pointer.active = false
-    }
-
-    buildGrid()
-    
-    if (isReduced) {
-      draw()
-      cancelAnimationFrame(rafId)
-    } else {
-      rafId = requestAnimationFrame(draw)
-      window.addEventListener('pointermove', handlePointerMove, { passive: true })
-      window.addEventListener('pointerleave', handlePointerLeave)
-    }
-
-    const resizeObserver = new ResizeObserver(() => {
-      buildGrid()
-      if (isReduced) draw()
-    })
-    resizeObserver.observe(canvas)
-
-    return () => {
-      cancelAnimationFrame(rafId)
-      window.removeEventListener('pointermove', handlePointerMove)
-      window.removeEventListener('pointerleave', handlePointerLeave)
-      resizeObserver.disconnect()
-    }
-  }, [])
+    )
+  })
 
   return (
-    <section className='relative rounded-b-[2.5vw] max-md:rounded-b-[6vw] z-100 h-[110vh] w-full bg-background'>
-      <canvas ref={canvasRef} className='absolute inset-0 h-full w-full' />
+    <section
+      id='dots-section'
+      className='relative h-[110vh] w-full overflow-hidden bg-background max-md:h-auto max-md:min-h-[160vw]'
+    >
+      <DotsCanvas />
+
+      <div className='pointer-events-none absolute inset-0 flex items-center justify-between px-[2vw] max-md:relative max-md:inset-auto max-md:flex-col max-md:items-start max-md:justify-start max-md:gap-[8vw] max-md:px-[5vw] max-md:py-[20vw]'>
+        <div className='relative h-[40vw] w-[40vw] max-md:mx-auto max-md:h-[75vw] max-md:w-[85vw]'>
+          <div id='home-bg-video' className='background-video absolute inset-0' style={maskStyle}>
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              poster={POSTER}
+              className='h-full w-full object-cover brightness-30'
+            >
+              <source src={VIDEO_MP4} type='video/mp4' />
+            </video>
+          </div>
+        </div>
+
+        <div
+          id='parallax-div'
+          className='relative flex h-[40vw] w-[50vw] flex-col justify-between pb-[4vw] pr-[5vw] will-change-transform max-md:h-auto max-md:pt-[20vw] max-md:w-full max-md:gap-[16vw] max-md:pb-0 max-md:pr-0'
+        >
+          <h2 className='text36 flex flex-col gap-[0.15em] pt-[4vw] leading-[1.1] font-semibold text-white max-md:gap-[0.2em] max-md:pt-0'>
+            <span>
+              Fresh <span className='text-[#C600F6]'>Everyday</span>
+            </span>
+            <span className='pl-[4vw] max-md:pl-[6vw]'>
+              <span className='text-[#C600F6]'>Essentials </span> from Our
+            </span>
+            <span className='pl-[8vw] max-md:pl-[12vw]'>Neighborhood Pantry</span>
+          </h2>
+
+          <p className='text18 ml-auto w-[22vw] text-right leading-[1.5] text-white/85 max-md:ml-0 max-md:w-[90%] max-md:text-left'>
+            Stocked with seasonal produce, bakery warm from the oven, and pantry
+            staples you actually reach for — groceries with care, flavor, and a
+            little local soul.
+          </p>
+        </div>
+      </div>
     </section>
   )
 }

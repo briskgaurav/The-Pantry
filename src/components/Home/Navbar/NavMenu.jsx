@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 const LINKS = [
   { label: 'Playground', href: '#' },
-  { label: 'Carrers', href: '#' },
+  { label: 'Labs', href: '#' },
 ]
 
 export default function NavMenu({ open, onNavigate }) {

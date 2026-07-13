@@ -27,7 +27,7 @@ export default function Navbar() {
 
               <Clock />
               <Link
-                href="/contact"
+                href="#"
                 className=" rounded-[1vw] max-md:rounded-[2.5vw] hover:bg-background/70 ml-[.5vw] max-md:ml-[1vw] duration-300 transition-all bg-background  px-[1.5vw] py-[1vw] max-md:px-[3.5vw] max-md:py-[2.5vw] text10 max-md:text-[3vw]! max-md:font-semibold font-medium uppercase text-white"
               >
                 Let&apos;s Talk

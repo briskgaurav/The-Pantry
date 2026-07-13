@@ -32,22 +32,24 @@ export default function ViewPanel({
   const prevOpen = useRef(false);
   const lenis = useLenis();
   const isMobile = useMobile();
-
-  // The close tab hangs down from the top edge on desktop, but on mobile the
-  // navbar owns the top, so it is anchored to the bottom edge and points up.
-  // Its hidden state therefore has to slide off the matching edge: up (-100%)
-  // on desktop, down (+100%) on mobile.
   const closeHidden = isMobile ? 100 : -100;
 
   // Freeze the page behind the vault: Lenis scrolling is suspended while the
   // panel is open and resumed once it closes.
   useEffect(() => {
     if (!lenis) return;
+    let timer;
     if (open) {
-      lenis.stop();
+      lenis.scrollTo(0);
+      timer = setTimeout(() => {
+        lenis.stop();
+      }, 1000);
     } else {
       lenis.start();
     }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [open, lenis]);
 
   const activeIdx = Math.max(
@@ -258,6 +260,7 @@ export default function ViewPanel({
       <div className="pointer-events-none absolute left-[-5vw] max-md:left-[-20vw] top-1/2 z-30 -translate-y-1/2 max-md:top-[35%]">
         <TabButton
           ref={leftRef}
+          direction="x"
           label={
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-[1.2vw] h-[1.2vw] max-md:w-[3.5vw] max-md:h-[3.5vw]">
               <polyline points="15 18 9 12 15 6" />
@@ -270,6 +273,7 @@ export default function ViewPanel({
 
       <div className="pointer-events-none absolute right-[-5vw] max-md:right-[-20vw] max-md:top-[35%] top-1/2 z-30 -translate-y-1/2">
         <TabButton
+          direction="x"
           ref={rightRef}
           label={
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-[1.2vw] h-[1.2vw] max-md:w-[3.5vw] max-md:h-[3.5vw]">
