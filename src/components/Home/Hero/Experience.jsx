@@ -18,9 +18,9 @@ export default function Experience({ active, view = null, open = false }) {
     if (!isClient || skip) return null 
 
     return (
-        <div className='h-full w-full' role='img' aria-label='3D product preview'>
+        <div id='experience-container' className='h-full w-full' role='img' aria-label='3D product preview'>
         <Canvas
-            id='pantry-section'
+            id='experience'
             dpr={[1, 1.5]}
             camera={{ position: [0, 0, 6], fov: 35 }}
             gl={{ antialias: true, powerPreference: "high-performance", alpha: false }}

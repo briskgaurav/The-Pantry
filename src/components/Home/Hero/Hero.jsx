@@ -11,11 +11,11 @@ export default function Hero() {
   const [view, setView] = useState(0)
 
   return (
-    <section id='PantrySection' className='h-dvh bg-background max-md:p-[1.5vw]  w-full p-[.5vw]'>
+    <section id='hero' className='h-dvh bg-background max-md:p-[1.5vw]  w-full p-[.5vw]'>
       {/* THIS IS FOR SEO */}
       <h1 className='sr-only'>The Pantry — interactive culinary models</h1>
       <div className='bg-background  text-foreground relative h-full w-full overflow-hidden rounded-[2.5vw] max-md:rounded-[5vw]'>
-        <div className='absolute inset-0'>
+        <div id='pantry-section' className='absolute inset-0'>
           <Experience active={active} view={view} open={open} />
         </div>
         <HeroUI
