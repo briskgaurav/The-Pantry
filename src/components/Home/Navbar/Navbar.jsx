@@ -30,7 +30,7 @@ export default function Navbar() {
               <Clock />
               <Link
                 href="#"
-                className="text10 ml-[.5vw] rounded-[1vw] bg-background px-[1.5vw] py-[1vw] font-medium text-white uppercase transition-all duration-300 hover:bg-background/70 max-md:ml-[1vw] max-md:rounded-[2.5vw] max-md:px-[3.5vw] max-md:py-[2.5vw] max-md:text-[3vw]! max-md:font-semibold"
+                className="text10 ml-[.5vw] rounded-[1vw] bg-background px-[1.5vw] py-[1vw] font-medium text-white uppercase transition-all duration-300 hover:bg-background/70 max-md:ml-[1vw] max-md:rounded-[2.5vw] max-md:px-[3.5vw] max-md:py-[2.5vw] max-md:text-[2.5vw]! max-md:font-semibold"
               >
                 Let&apos;s Talk
               </Link>
