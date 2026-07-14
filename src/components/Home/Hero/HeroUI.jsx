@@ -1,11 +1,9 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import CategorySelector from "./CategorySelector";
-
-const ViewPanel = dynamic(() => import("./ViewPanel"), { ssr: false });
-const Barcode = dynamic(() => import("./Barcode"), { ssr: false });
-const HeroTagline = dynamic(() => import("./HeroTagline"), { ssr: false });
+import ViewPanel from "./ViewPanel";
+import Barcode from "./Barcode";
+import HeroTagline from "./HeroTagline";
 
 export default function HeroUI({ active, setActive, view, setView, open, setOpen }) {
     return (
