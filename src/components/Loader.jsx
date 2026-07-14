@@ -20,7 +20,7 @@ export default function Loader() {
       })
     }
   }, [progress])
-
+ 
   useEffect(() => {
     if (!active && progress === 100) {
       const tl = gsap.timeline({
