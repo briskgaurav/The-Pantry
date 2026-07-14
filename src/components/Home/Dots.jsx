@@ -86,6 +86,8 @@ export default function Dots() {
               muted
               playsInline
               poster={POSTER}
+              aria-hidden='true'
+              tabIndex={-1}
               className='h-full w-full object-cover brightness-30'
             >
               <source src={VIDEO_MP4} type='video/mp4' />
@@ -107,7 +109,7 @@ export default function Dots() {
             <span className='pl-[8vw] max-md:pl-[12vw]'>Neighborhood Pantry</span>
           </h2>
 
-          <p className='text18 ml-auto w-[22vw] text-right leading-[1.5] text-white/85 max-md:ml-0 max-md:w-[90%] max-md:text-left'>
+          <p className='text18 ml-auto w-[22vw] text-right leading-[1.5] text-white max-md:ml-0 max-md:w-[90%] max-md:text-left'>
             Stocked with seasonal produce, bakery warm from the oven, and pantry
             staples you actually reach for — groceries with care, flavor, and a
             little local soul.

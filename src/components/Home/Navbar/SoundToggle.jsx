@@ -10,7 +10,7 @@ export default function SoundToggle() {
 
   useGSAP(() => {
     const bars = gsap.utils.toArray('.sound-bar', containerRef.current)
-    
+
     if (playing) {
       bars.forEach((bar) => {
         const animateBar = () => {
@@ -18,7 +18,7 @@ export default function SoundToggle() {
             height: Math.random() * 12 + 4,
             duration: Math.random() * 0.2 + 0.15,
             ease: 'sine.inOut',
-            onComplete: animateBar
+            onComplete: animateBar,
           })
         }
         animateBar()
@@ -27,21 +27,24 @@ export default function SoundToggle() {
       gsap.killTweensOf(bars)
       gsap.to(bars, { height: 3, duration: 0.3, ease: 'power2.out' })
     }
-    
+
     return () => gsap.killTweensOf(bars)
   }, [playing])
 
   return (
     <button
       ref={containerRef}
-      type="button"
+      type='button'
       onClick={() => setPlaying(!playing)}
-      className="flex items-center cursor-pointer justify-center gap-[2px] h-[16px]"
+      aria-label={playing ? 'Mute ambient sound' : 'Play ambient sound'}
+      aria-pressed={playing}
+      className='flex min-h-6 min-w-6 cursor-pointer items-center justify-center gap-[2px] p-1'
     >
       {[...Array(5)].map((_, i) => (
-        <span 
-          key={i} 
-          className="sound-bar w-[2px] h-3 bg-current block"
+        <span
+          key={i}
+          aria-hidden='true'
+          className='sound-bar block h-3 w-[2px] bg-current'
         />
       ))}
     </button>

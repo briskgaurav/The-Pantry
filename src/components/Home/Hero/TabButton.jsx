@@ -9,12 +9,14 @@ import { forwardRef } from "react";
 const TabButton = forwardRef(function TabButton(
   {
     label,
+    ariaLabel,
     onClick,
     rotate = 0,
     direction = "y",
     className = "",
-    labelClassName = "text-white/80 group-hover:text-white",
+    labelClassName = "text-white group-hover:text-white",
     svgClassName = "text-foreground",
+    ...rest
   },
   ref,
 ) {
@@ -22,30 +24,36 @@ const TabButton = forwardRef(function TabButton(
   const firstSpanHover = isY ? "group-hover:-translate-y-full" : "group-hover:-translate-x-full";
   const secondSpanStart = isY ? "translate-y-full" : "translate-x-full";
   const secondSpanHover = isY ? "group-hover:translate-y-0" : "group-hover:translate-x-0";
+  const accessibleName =
+    ariaLabel ?? (typeof label === "string" ? label : undefined);
 
   return (
     <button
       ref={ref}
       type="button"
       onClick={onClick}
-      aria-label={label}
-      className={`pointer-events-auto group max-md:mt-[-1px] relative flex cursor-pointer items-center justify-center ${className}`}
+      aria-label={accessibleName}
+      className={`pointer-events-auto group relative flex min-h-6 min-w-6 max-md:mt-[-1px] cursor-pointer items-center justify-center ${className}`}
+      {...rest}
     >
       <span
-        className={`absolute z-10 text-[.8vw] max-md:text-[2.6vw] font-semibold tracking-[.15em] transition-colors overflow-hidden ${labelClassName}`}
+        className={`absolute z-10 overflow-hidden text-[.8vw] font-semibold tracking-[.15em] transition-colors max-md:text-[2.6vw] ${labelClassName}`}
+        aria-hidden={typeof label !== "string" ? true : undefined}
       >
         <span className={`inline-block transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] ${firstSpanHover}`}>
           {label}
         </span>
-        <span className={`absolute max-md:hidden left-0 top-0 w-full text-center inline-block transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] ${secondSpanStart} ${secondSpanHover}`}>
+        <span className={`absolute top-0 left-0 inline-block w-full text-center transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] max-md:hidden ${secondSpanStart} ${secondSpanHover}`}>
           {label}
         </span>
       </span>
       <svg
-        className={`h-[2.5vw] max-md:h-[10vw] w-auto ${svgClassName}`}
+        className={`h-[2.5vw] w-auto max-md:h-[10vw] ${svgClassName}`}
         viewBox="0 0 213 43"
         preserveAspectRatio="none"
         fill="none"
+        aria-hidden="true"
+        focusable="false"
         style={{ transform: `rotate(${rotate}deg)` }}
       >
         <path

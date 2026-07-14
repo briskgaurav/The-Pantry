@@ -3,20 +3,27 @@
 import { useEffect, useState } from 'react'
 
 export default function Clock() {
-  const [time, setTime] = useState('--:--')
+  const [now, setNow] = useState(null)
 
   useEffect(() => {
-    const tick = () => setTime(new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }))
+    const tick = () => setNow(new Date())
     tick()
     const id = setInterval(tick, 1000)
     return () => clearInterval(id)
   }, [])
 
+  const label = now
+    ? now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+    : '--:--'
+
   return (
-    <div>
-      <span className="text12 font-semibold tabular-nums tracking-wide" suppressHydrationWarning>
-        {time}
-      </span>
-    </div>
+    <time
+      dateTime={now ? now.toISOString() : undefined}
+      aria-label={`Current time ${label}`}
+      className='text12 font-semibold tracking-wide tabular-nums'
+      suppressHydrationWarning
+    >
+      {label}
+    </time>
   )
 }

@@ -9,12 +9,14 @@ import MouseTilt from '@/components/utils/MouseTilt'
 
 export default function Experience({ active, view = null, open = false }) {
     return (
+        <div className='h-full w-full' role='img' aria-label='3D product preview'>
         <Canvas
             id='pantry-section'
             dpr={[1, 1.5]}
             camera={{ position: [0, 0, 6], fov: 35 }}
             gl={{ antialias: true, powerPreference: "high-performance", alpha: false }}
             className='h-full w-full'
+            aria-hidden='true'
         >
             <Suspense fallback={null}>
                 <GradientBackground active={active} />
@@ -26,5 +28,6 @@ export default function Experience({ active, view = null, open = false }) {
                 </MouseTilt>
             </Suspense>
         </Canvas>
+        </div>
     )
 }

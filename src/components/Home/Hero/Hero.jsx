@@ -12,6 +12,8 @@ export default function Hero() {
 
   return (
     <section className='h-dvh bg-background max-md:p-[1.5vw]  w-full p-[.5vw]'>
+      {/* THIS IS FOR SEO */}
+      <h1 className='sr-only'>The Pantry — interactive culinary models</h1>
       <div className='bg-background  text-foreground relative h-full w-full overflow-hidden rounded-[2.5vw] max-md:rounded-[5vw]'>
         <div className='absolute inset-0'>
           <Experience active={active} view={view} open={open} />

@@ -198,26 +198,28 @@ export default function ViewPanel({
     <>
       <div
         ref={panelRef}
-        className="pointer-events-none absolute left-1/2 bottom-[1vw] max-md:bottom-[12vw] z-20 -translate-x-1/2"
+        className="pointer-events-none absolute bottom-[1vw] left-1/2 z-20 -translate-x-1/2 max-md:bottom-[12vw]"
+        inert={!open ? true : undefined}
+        aria-hidden={!open}
       >
         <div className="pointer-events-auto max-md:min-h-[70vw] w-[80vw] max-md:w-[92vw] rounded-[1.2vw] max-md:rounded-[3vw] bg-background max-md:flex max-md:items-center max-md:justify-center px-[2.5vw] py-[1.5vw] max-md:px-[5vw] max-md:py-[2vw] text-foreground">
           <div ref={contentRef} className="flex flex-col items-stretch">
             <div className="flex items-center justify-between gap-[3vw] max-md:flex-col max-md:items-stretch max-md:gap-[6vw]">
               <div className="flex items-center w-fit gap-[2vw] max-md:w-full max-md:flex-col max-md:items-start max-md:gap-[3vw]">
 
-                <h3
+                <p
                   key={`title-${active}`}
                   ref={titleRef}
                   className="w-[13vw] max-md:text-center max-md:w-full shrink-0 text24 leading-[1.1]"
                 >
                   {model.label}
-                </h3>
+                </p>
 
                 {/* Description — about the selected model */}
                 <p
                   key={`desc-${active}`}
                   ref={descRef}
-                  className=" w-[35vw] max-md:text-center max-md:w-full text16 leading-[1.5] text-foreground/70"
+                  className=" w-[35vw] max-md:text-center max-md:w-full text16 leading-[1.5] text-foreground/90"
                 >
                   {model.info}
                 </p>
@@ -235,6 +237,7 @@ export default function ViewPanel({
                         type="button"
                         onClick={() => setView(i)}
                         aria-label={v.label}
+                        aria-pressed={isActive}
                         className={`relative overflow-hidden rounded-[.8vw] max-md:rounded-[2.5vw] bg-foreground/[0.07] ring-2 transition-all duration-300 ${isActive
                           ? "h-[8vw] w-[8vw] max-md:h-[20vw] max-md:w-[20vw] ring-foreground"
                           : "h-[8vw] w-[5vw] max-md:h-[20vw] max-md:w-[14vw] ring-foreground/10 hover:ring-foreground/25"
@@ -257,40 +260,54 @@ export default function ViewPanel({
         </div>
       </div>
 
-      <div className="pointer-events-none absolute left-[-5vw] max-md:left-[-20vw] top-1/2 z-30 -translate-y-1/2 max-md:top-[35%]">
+      <div
+        className="pointer-events-none absolute left-[-5vw] top-1/2 z-30 -translate-y-1/2 max-md:left-[-20vw] max-md:top-[35%]"
+        inert={!open ? true : undefined}
+      >
         <TabButton
           ref={leftRef}
           direction="x"
+          ariaLabel="Previous category"
           label={
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-[1.2vw] h-[1.2vw] max-md:w-[3.5vw] max-md:h-[3.5vw]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-[1.2vw] w-[1.2vw] max-md:h-[3.5vw] max-md:w-[3.5vw]" aria-hidden="true">
               <polyline points="15 18 9 12 15 6" />
             </svg>
           }
           rotate={-90}
           onClick={() => cycle(-1)}
+          tabIndex={open ? 0 : -1}
         />
       </div>
 
-      <div className="pointer-events-none absolute right-[-5vw] max-md:right-[-20vw] max-md:top-[35%] top-1/2 z-30 -translate-y-1/2">
+      <div
+        className="pointer-events-none absolute top-1/2 right-[-5vw] z-30 -translate-y-1/2 max-md:top-[35%] max-md:right-[-20vw]"
+        inert={!open ? true : undefined}
+      >
         <TabButton
           direction="x"
           ref={rightRef}
+          ariaLabel="Next category"
           label={
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-[1.2vw] h-[1.2vw] max-md:w-[3.5vw] max-md:h-[3.5vw]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-[1.2vw] w-[1.2vw] max-md:h-[3.5vw] max-md:w-[3.5vw]" aria-hidden="true">
               <polyline points="9 18 15 12 9 6" />
             </svg>
           }
           rotate={90}
           onClick={() => cycle(1)}
+          tabIndex={open ? 0 : -1}
         />
       </div>
 
-      <div className="pointer-events-none absolute top-0 max-md:top-auto max-md:bottom-[0vw] left-1/2 z-30 -translate-x-1/2">
+      <div
+        className="pointer-events-none absolute top-0 left-1/2 z-30 -translate-x-1/2 max-md:top-auto max-md:bottom-[0vw]"
+        inert={!open ? true : undefined}
+      >
         <TabButton
           ref={closeRef}
           label="CLOSE"
           onClick={close}
           svgClassName="max-md:rotate-180"
+          tabIndex={open ? 0 : -1}
         />
       </div>
     </>

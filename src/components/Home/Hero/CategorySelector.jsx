@@ -164,6 +164,8 @@ export default function CategorySelector({ active, setActive, open, setOpen }) {
   return (
     <div
       ref={containerRef}
+      inert={open ? true : undefined}
+      aria-hidden={open || undefined}
       className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-between px-[1vw] max-md:px-[2vw]"
     >
       <div ref={proxyRef} className="pointer-events-none absolute h-px w-px opacity-0" />
@@ -183,7 +185,14 @@ export default function CategorySelector({ active, setActive, open, setOpen }) {
             onClick={() =>
               isCenter ? setOpen(true) : setActive(CATEGORIES[catIdx].id)
             }
-            className={`pointer-events-auto cursor-pointer relative overflow-hidden rounded-full py-[.5vw] max-md:py-[2vw] text12 font-semibold text-white ${isCenter ? "bg-black" : ""
+            aria-label={
+              isCenter
+                ? `Open ${CATEGORIES[catIdx].label} details`
+                : `Select ${CATEGORIES[catIdx].label}`
+            }
+            aria-current={isCenter ? "true" : undefined}
+            tabIndex={open ? -1 : 0}
+            className={`pointer-events-auto cursor-pointer relative overflow-hidden rounded-full py-[.5vw] max-md:py-[2vw] text12 font-semibold text-white min-h-6 ${isCenter ? "bg-black" : ""
               }`}
           >
             <span aria-hidden className="invisible grid">
@@ -201,6 +210,7 @@ export default function CategorySelector({ active, setActive, open, setOpen }) {
               ref={(el) => {
                 stripRefs.current[box] = el;
               }}
+              aria-hidden="true"
               className="absolute inset-0 flex items-center"
             >
               {LOOP.map((item, i) => (

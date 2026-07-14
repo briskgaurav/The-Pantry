@@ -7,17 +7,19 @@ import SoundToggle from "./SoundToggle";
 import NavMenu from "./NavMenu";
 import TabButton from "../Hero/TabButton";
 
-
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="fixed left-[2vw] top-[2vw] max-md:left-[4vw] max-md:top-[4vw] max-md:w-[92vw] z-500 flex justify-center">
+    <header className="fixed top-[2vw] left-[2vw] z-500 flex justify-center max-md:top-[4vw] max-md:left-[4vw] max-md:w-[92vw]">
       <div className="relative max-md:w-full">
-        <div className="relative w-fit max-md:w-full max-w-3xl rounded-[1.2vw] max-md:rounded-[3vw] bg-white text-black">
-          <div className="flex items-center justify-between  gap-4 max-md:gap-[3vw] rounded-2xl p-[.8vw] max-md:p-[2.5vw]">
-            <Link href="/" aria-label="logo" className="shrink-0 ml-[1vw] max-md:ml-[2vw]">
-              <p className="text-[1vw] max-md:text-[3.5vw] font-bold">THE PANTRY</p>
+        <div className="relative w-fit max-w-3xl rounded-[1.2vw] bg-white text-black max-md:w-full max-md:rounded-[3vw]">
+          <div className="flex items-center justify-between gap-4 rounded-2xl p-[.8vw] max-md:gap-[3vw] max-md:p-[2.5vw]">
+            <Link
+              href="/"
+              className="ml-[1vw] shrink-0 max-md:ml-[2vw]"
+            >
+              <p className="text-[1vw] font-bold max-md:text-[3.5vw]">THE PANTRY</p>
             </Link>
 
             <div className="flex items-center gap-[1.5vw] max-md:gap-[4vw]">
@@ -28,7 +30,7 @@ export default function Navbar() {
               <Clock />
               <Link
                 href="#"
-                className=" rounded-[1vw] max-md:rounded-[2.5vw] hover:bg-background/70 ml-[.5vw] max-md:ml-[1vw] duration-300 transition-all bg-background  px-[1.5vw] py-[1vw] max-md:px-[3.5vw] max-md:py-[2.5vw] text10 max-md:text-[3vw]! max-md:font-semibold font-medium uppercase text-white"
+                className="text10 ml-[.5vw] rounded-[1vw] bg-background px-[1.5vw] py-[1vw] font-medium text-white uppercase transition-all duration-300 hover:bg-background/70 max-md:ml-[1vw] max-md:rounded-[2.5vw] max-md:px-[3.5vw] max-md:py-[2.5vw] max-md:text-[3vw]! max-md:font-semibold"
               >
                 Let&apos;s Talk
               </Link>
@@ -39,9 +41,11 @@ export default function Navbar() {
         </div>
         <TabButton
           label={open ? "CLOSE" : "MENU"}
+          aria-expanded={open}
+          aria-controls="nav-menu"
           onClick={() => setOpen((v) => !v)}
-          className="absolute bottom-0 left-[2vw] max-md:left-[22vw] "
-          labelClassName="text-black/70 text12 group-hover:text-black"
+          className="absolute bottom-0 left-[2vw] max-md:left-[22vw]"
+          labelClassName="text-black text12 group-hover:text-black"
           svgClassName="[&_path]:fill-white"
         />
       </div>
