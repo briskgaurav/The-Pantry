@@ -15,7 +15,7 @@ export default function Experience({ active, view = null, open = false }) {
     const isClient = useSyncExternalStore(noopSubscribe, () => true, () => false)
     const skip = useMemo(() => isClient && isAuditEnvironment(), [isClient])
 
-    if (!isClient || skip) return null
+    if (!isClient || skip) return null 
 
     return (
         <div className='h-full w-full' role='img' aria-label='3D product preview'>
