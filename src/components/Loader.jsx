@@ -55,7 +55,7 @@ export default function Loader() {
       aria-live='polite'
       aria-busy='true'
       aria-label='Loading experience'
-      className='fixed inset-0 z-[9999] flex h-dvh w-full items-center justify-center bg-background p-[.5vw] max-md:p-[1.5vw]'
+      className='fixed inset-0 z-9999 flex h-dvh w-full items-center justify-center bg-background p-[.5vw] max-md:p-[1.5vw]'
     >
       <div
         ref={spinnerContainerRef}

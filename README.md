@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# The Pantry
 
-## Getting Started
-
-First, run the development server:
+## Setup / Run
 
 ```bash
+git clone https://github.com/briskgaurav/The-Pantry.git
+cd The-Pantry
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+npm run build
+npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Models
 
-## Learn More
+I used the 3D models from [Smooothy](https://smooothy.federic.ooo/). They’re saved locally at `public/model/foods-optimized.glb`.
 
-To learn more about Next.js, take a look at the following resources:
+## Decision Log
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- I chose the models from [Smooothy](https://smooothy.federic.ooo/) instead of Sketchfab because they all share the same theme and are already optimized. Sketchfab models are often inconsistent, not optimized, and don’t feel like they belong together.
+- I took design inspiration from [Factors](https://www.factors.design/) instead of starting from scratch, and then added UI/UX improvements that felt missing there.
+- I made the angle viewer panel feel merged with the scene behind it instead of using a hard overlay, so opening it still feels like part of the same space.
+- I added autoscroll and stopped page scrolling when the view panel opens, so you stay focused on the model while inspecting it.
+- I added a parallax sticky footer instead of a plain static one, just for a bit of fun at the end of the page.
