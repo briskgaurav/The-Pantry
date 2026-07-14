@@ -219,7 +219,7 @@ export default function ViewPanel({
                 <p
                   key={`desc-${active}`}
                   ref={descRef}
-                  className=" w-[35vw] max-md:text-center max-md:w-full text16 leading-[1.5] text-foreground/90"
+                  className=" w-[35vw] max-md:text-center max-md:w-full text16 leading-normal text-foreground/90"
                 >
                   {model.info}
                 </p>
@@ -299,7 +299,7 @@ export default function ViewPanel({
       </div>
 
       <div
-        className="pointer-events-none absolute top-0 left-1/2 z-30 -translate-x-1/2 max-md:top-auto max-md:bottom-[0vw]"
+        className="pointer-events-none absolute top-0 left-1/2 z-30 -translate-x-1/2 max-md:top-auto max-md:bottom-0"
         inert={!open ? true : undefined}
       >
         <TabButton
