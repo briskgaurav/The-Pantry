@@ -66,7 +66,7 @@ export default function ViewPanel({
 
 
   const close = () => {
-    setView(null);
+    setView(0);
     setOpen(false);
   };
 

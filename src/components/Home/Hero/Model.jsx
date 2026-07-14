@@ -58,6 +58,7 @@ function CategoryModel({
   const viewRef = useRef();
   const floatEnabled = useRef(true);
 
+  // This is for entry animation
   useGSAP(
     () => {
       const el = ref.current;
@@ -79,7 +80,7 @@ function CategoryModel({
     },
     { dependencies: [object] },
   );
-
+  // For Floating Animation
   useFrame((state) => {
     if (ref.current && floatEnabled.current) {
       ref.current.position.y = Math.sin(state.clock.elapsedTime * 1.5) * 0.1;
@@ -93,7 +94,7 @@ function CategoryModel({
       if (!el || !vel) return;
 
       if (open) {
-  
+
         floatEnabled.current = false;
         gsap.to(el.position, {
           y: 0,
@@ -189,7 +190,7 @@ function CategoryModel({
 }
 
 export default function Models({ active, view = null, open = false }) {
-  const category = CATEGORIES.find((c) => c.id === active) ?? CATEGORIES[0];
+  const category = CATEGORIES.find((cat) => cat.id === active) ?? CATEGORIES[0];
   return (
     <Suspense fallback={null}>
       <CategoryModel
@@ -206,6 +207,6 @@ export default function Models({ active, view = null, open = false }) {
 }
 
 // Warm the cache for every distinct file up front.
-Array.from(new Set(CATEGORIES.map((c) => c.file))).forEach((file) =>
+Array.from(new Set(CATEGORIES.map((cat) => cat.file))).forEach((file) =>
   useGLTF.preload(file),
 );

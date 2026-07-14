@@ -8,10 +8,10 @@ import { DEFAULT_CATEGORY } from '../../utils/categories'
 export default function Hero() {
   const [active, setActive] = useState(DEFAULT_CATEGORY)
   const [open, setOpen] = useState(false)
-  const [view, setView] = useState(null)
+  const [view, setView] = useState(0)
 
   return (
-    <section className='h-dvh bg-background max-md:p-[1.5vw]  w-full p-[.5vw]'>
+    <section id='PantrySection' className='h-dvh bg-background max-md:p-[1.5vw]  w-full p-[.5vw]'>
       {/* THIS IS FOR SEO */}
       <h1 className='sr-only'>The Pantry — interactive culinary models</h1>
       <div className='bg-background  text-foreground relative h-full w-full overflow-hidden rounded-[2.5vw] max-md:rounded-[5vw]'>

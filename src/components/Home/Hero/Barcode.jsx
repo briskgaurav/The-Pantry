@@ -10,7 +10,6 @@ export default function Barcode({ hidden }) {
     const rootRef = useRef(null);
     const [cityIdx, setCityIdx] = useState(0);
 
-    // City slider ticker
     useEffect(() => {
         const interval = setInterval(() => {
             setCityIdx((i) => (i + 1) % CITIES.length);
@@ -60,7 +59,7 @@ export default function Barcode({ hidden }) {
                         style={{ transform: `translateY(-${cityIdx * 100}%)` }}
                     >
                         {CITIES.map((city, i) => (
-                            <div key={i} className="h-[1em] flex-shrink-0 flex items-center">{city}</div>
+                            <div key={i} className="h-[1em] shrink-0 flex items-center">{city}</div>
                         ))}
                     </div>
                 </div>
