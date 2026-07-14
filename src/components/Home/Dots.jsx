@@ -1,9 +1,11 @@
 'use client'
 
-import DotsCanvas from './DotsCanvas'
+import dynamic from 'next/dynamic'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+const DotsCanvas = dynamic(() => import('./DotsCanvas'), { ssr: false })
 
 const POSTER =
   'https://cdn.prod.website-files.com/67a325294e5fbb80fd507882%2F6808f80f65429a2712c1f50a_Foreground%20Video%20compressed-poster-00001.jpg'

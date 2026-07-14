@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import Experience from './Experience'
+import dynamic from 'next/dynamic'
 import HeroUI from './HeroUI'
 import { DEFAULT_CATEGORY } from '../../utils/categories'
+
+const Experience = dynamic(() => import('./Experience'), { ssr: false })
 
 export default function Hero() {
   const [active, setActive] = useState(DEFAULT_CATEGORY)

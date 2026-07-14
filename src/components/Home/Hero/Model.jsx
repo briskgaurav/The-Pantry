@@ -9,6 +9,7 @@ import * as THREE from "three";
 import { clone as skeletonClone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { degToRad } from "three/src/math/MathUtils";
 import { CATEGORIES, VIEWS } from "../../utils/categories";
+import { useLoaderReveal } from "../../utils/loaderReveal";
 import { useMobile } from "../../utils/useMobile";
 
 const FIT_SIZE = 2.8;
@@ -57,13 +58,25 @@ function CategoryModel({
   const ref = useRef();
   const viewRef = useRef();
   const floatEnabled = useRef(true);
+  const firstEntry = useRef(true);
 
-  // This is for entry animation
-  useGSAP(
-    () => {
-      const el = ref.current;
-      if (!el) return;
-      gsap
+  // Entry animation — held back until the loader reveals the page, then scales
+  // and spins the model in (delayed slightly on the first reveal only).
+  useLoaderReveal((alreadyDone) => {
+    const el = ref.current;
+    if (!el) return;
+
+    // Hide it, then animate in after the delay.
+    gsap.set(el.scale, { x: 0, y: 0, z: 0 });
+    // Only stall for the shutter on the first synced reveal. If the loader had
+    // already finished (cached/fast load, model mounted late), skip the delay
+    // so it doesn't pop in after the shutter is already gone.
+    const delay = firstEntry.current && !alreadyDone ? 0.6 : 0;
+    firstEntry.current = false;
+
+    let tl;
+    const delayed = gsap.delayedCall(delay, () => {
+      tl = gsap
         .timeline()
         .fromTo(
           el.scale,
@@ -77,10 +90,14 @@ function CategoryModel({
           { y: 0, duration: 0.7, ease: "power3.out" },
           0,
         );
-    },
-    { dependencies: [object] },
-  );
-  // For Floating Animation
+    });
+
+    return () => {
+      delayed.kill();
+      tl?.kill();
+    };
+  }, [object]);
+
   useFrame((state) => {
     if (ref.current && floatEnabled.current) {
       ref.current.position.y = Math.sin(state.clock.elapsedTime * 1.5) * 0.1;
