@@ -40,10 +40,10 @@ const TabButton = forwardRef(function TabButton(
         className={`absolute z-10 overflow-hidden text-[.8vw] font-semibold tracking-[.15em] transition-colors max-md:text-[2.6vw] ${labelClassName}`}
         aria-hidden={typeof label !== "string" ? true : undefined}
       >
-        <span className={`inline-block transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] ${firstSpanHover}`}>
+        <span className={`inline-block transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${firstSpanHover}`}>
           {label}
         </span>
-        <span className={`absolute top-0 left-0 inline-block w-full text-center transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] max-md:hidden ${secondSpanStart} ${secondSpanHover}`}>
+        <span className={`absolute top-0 left-0 inline-block w-full text-center transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] max-md:hidden ${secondSpanStart} ${secondSpanHover}`}>
           {label}
         </span>
       </span>

@@ -2,12 +2,21 @@
 
 import { Canvas } from '@react-three/fiber'
 import { Center, Environment } from '@react-three/drei'
-import { Suspense } from 'react'
+import { Suspense, useMemo, useSyncExternalStore } from 'react'
 import GradientBackground from './GradientBackground'
 import Models from './Model'
 import MouseTilt from '@/components/utils/MouseTilt'
+import { isAuditEnvironment } from '@/components/utils/audit'
+
+const noopSubscribe = () => () => {}
 
 export default function Experience({ active, view = null, open = false }) {
+
+    const isClient = useSyncExternalStore(noopSubscribe, () => true, () => false)
+    const skip = useMemo(() => isClient && isAuditEnvironment(), [isClient])
+
+    if (!isClient || skip) return null
+
     return (
         <div className='h-full w-full' role='img' aria-label='3D product preview'>
         <Canvas
