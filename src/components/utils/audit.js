@@ -14,7 +14,7 @@ export function isLighthouseOrHeadless() {
 
   if (navigator.webdriver === true) return true;
 
-  return isAuditUserAgent(navigator.userAgent);
+  return isAuditUserAgent(navigator.userAgent); 
 }
 
 export function isSoftwareRenderer() {
