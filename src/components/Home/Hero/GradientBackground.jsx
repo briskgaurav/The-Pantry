@@ -57,7 +57,7 @@ export default function GradientBackground({ active }) {
   const start = useRef(true)
 
   useFrame((state) => {
-    uniforms.uTime.value = state.clock.elapsedTime
+    uniforms.uTime.value = state.clock.elapsedTime 
   })
 
   // Morph the gradient colors + fire a quick pulse whenever the model switches.
